@@ -1,0 +1,47 @@
+#####
+# generic cross compiling Makefile from linux to for Windows
+# * You will have to change some paths to where your cross
+#   tools are located.
+
+include Makefile.ver
+
+# system options
+DS = /
+
+# cc options
+INCLUDEDIR = $HOME/local/cross-tools-i386-mingw32msvc/include
+CC = i386-mingw32msvc-gcc
+CFLAGS = -I$(INCLUDEDIR) -Wall -ansi -pedantic -DWIN32
+LDFLAGS = -I$(INCLUDEDIR) -Wall
+
+# java options
+JAVAC = javac
+JAR = jar
+JFLAGS = 
+
+# utilities
+REMOVE = rm
+REMOVE_FLAGS = -rf
+COPY = cp
+COPY_FLAGS = -r
+MKDIR = mkdir
+MKDIR_FLAGS =
+ARCHIVE = ./bin/win32-cross-zip
+ARCHIVE_FLAGS = 
+
+# distribution
+README = README.txt 
+DISTDIR = IceCC
+DIST = icecc-$(VERSION)-win32.zip
+
+# executables
+EXEC1 = icedc.exe
+EXEC2 = icecc.exe
+JARFILE = IceCCUI.jar
+UIEXEC = IceCCUI.BAT
+
+# confuration files
+CONFIG = icecc.ini.win32
+UICONFIG = iceccui.ini.win32
+
+include Makefile.inc

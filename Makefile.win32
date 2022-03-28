@@ -1,0 +1,50 @@
+#####
+# generic Makefile for Windows
+# * Assuming the default cygwin include path. You will probably have
+#   to fiddle with these options a bit to get it working with another
+#   suit of tools. I haven't tested this with all configs. Use at your
+#   own risk. You need some basic unix tools like rm and cp. You can try
+#   replacing them with the 'del' and 'copy' commands.
+
+include Makefile.ver
+
+# system options
+DS = \\
+
+# cc options
+INCLUDEDIR = \\cygwin\\usr\\include
+CC = cc
+CFLAGS = -I$(INCLUDEDIR) -Wall -ansi -pedantic -DWIN32
+LDFLAGS = -I$(INCLUDEDIR) -Wall
+
+# java options
+JAVAC = javac
+JAR = jar
+JFLAGS = 
+
+# utilities
+REMOVE = rm
+REMOVE_FLAGS = -rf
+COPY = cp
+COPY_FLAGS = -r
+MKDIR = mkdir
+MKDIR_FLAGS =
+ARCHIVE = zip
+ARCHIVE_FLAGS = -rq
+
+# distribution
+README = README.txt
+DISTDIR = IceCC 
+DIST = icecc-$(VERSION)-win32.zip
+
+# executables
+EXEC1 = icedc.exe
+EXEC2 = icecc.exe
+JARFILE = IceCCUI.jar
+UIEXEC = IceCCUI.BAT
+
+# confuration files
+CONFIG = icecc.ini.win32
+UICONFIG = iceccui.ini.win32
+
+include Makefile.inc

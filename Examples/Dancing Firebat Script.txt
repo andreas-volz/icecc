@@ -1,0 +1,234 @@
+# ----------------------------------------------------------------------------- #
+# This is a decompile of the iscript.bin file './data/scripts/iscript.bin'
+# created on: Sat Jun  8 16:18:58 2002
+# ----------------------------------------------------------------------------- #
+
+# ----------------------------------------------------------------------------- #
+# This header is used by images.dat entries:
+# 226 Firebat (terran\firebat.grp)
+.headerstart
+IsId           	69
+Type           	12
+Init           	FirebatInit
+Death          	FirebatDeath
+GndAttkInit    	FirebatGndAttkInit
+AirAttkInit    	[NONE]
+SpAbility1     	[NONE]
+GndAttkRpt     	FirebatGndAttkRpt
+AirAttkRpt     	[NONE]
+SpAbility2     	[NONE]
+GndAttkToIdle  	FirebatGndAttkToIdle
+AirAttkToIdle  	[NONE]
+SpAbility3     	[NONE]
+Walking        	FirebatWalking
+Other          	FirebatOther
+BurrowInit     	[NONE]
+.headerend
+# ----------------------------------------------------------------------------- #
+
+FirebatInit:
+	imgul09        	227 0 0	# FirebatShad (terran\tfbShad.grp)
+
+# =================================== #
+# Main entry point to idle animation
+# =================================== #
+FirebatOther:
+	playfram       	0x22	# frame set 2
+local03:
+	waitrand       	30 40        # random wait, then randomly:
+	__1e_condjmp   	25 local00   # 1) go to spin around anim
+	__1e_condjmp   	128 local02  # 2) step and turn anim
+	__1e_condjmp	150 dance    # 3) our dancing anim!
+	goto           	local03      # repeat
+
+# ===================================== #
+# This is our dancing animation routine
+# ===================================== #
+dance:
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	__1e_condjmp	100 saysomething # sometimes say something
+	__1e_condjmp	128 spinaround   # sometimes spin around
+	__1e_condjmp	200 dance        # sometimes dance some more
+	goto           	FirebatOther     # otherwise return to idle
+
+# This routine plays a sound and then returns to dancing
+saysomething:
+	playsndbtwn    	310 313	# Firebat "Yes" sounds (like "Let's Burn!")
+	wait 1
+	goto		dance
+
+# This routine makes the firebat spin around
+spinaround:
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	wait           	6
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	wait           	6
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	goto dance
+
+# 
+# The remaining are the original idle routines and other stuff
+#
+
+# Idle Animation which the firebat points his flame throwers and spins around
+local00:
+	playfram       	0x00	# frame set 0
+	wait           	1
+	__1e_condjmp   	192 local01
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	wait           	6
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	turncwise      	2
+	wait           	3
+	wait           	6
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	turnccwise     	2
+	wait           	3
+	goto           	FirebatOther
+
+local02:
+	playfram       	0x33	# frame set 3
+	wait           	1
+	playfram       	0x44	# frame set 4
+	wait           	1
+	turnrand       	3
+	wait           	1
+	playfram       	0x33	# frame set 3
+	wait           	1
+	goto           	FirebatOther
+
+local01:
+	wait           	13
+	goto           	FirebatOther
+
+FirebatDeath:
+	playsndbtwn    	296 298	# Terran\Firebat\TFBDth00.WAV, Terran\Firebat\TFBDth02.WAV
+	imgol08        	332 0 0	# TerranBuildingExplosionsmall (thingy\tBangS.grp)
+	wait           	3
+	end            	
+
+FirebatGndAttkInit:
+	playfram       	0x00	# frame set 0
+FirebatGndAttkRpt:
+	wait           	1
+	nobrkcodestart 	
+	imgol08        	421 0 0	# FlameThrower (thingy\flamer.grp)
+	playfram       	0x11	# frame set 1
+	attkprojangle  	24
+	wait           	1
+	attkprojangle  	52
+	wait           	1
+	attkprojangle  	80
+	wait           	5
+	playfram       	0x00	# frame set 0
+	wait           	2
+	ignorerest     	
+FirebatGndAttkToIdle:
+	goto           	FirebatOther
+
+FirebatWalking:
+	move           	4
+	wait           	1
+	playfram       	0x33	# frame set 3
+	move           	4
+	wait           	1
+	playfram       	0x44	# frame set 4
+	move           	4
+	wait           	1
+	playfram       	0x55	# frame set 5
+	move           	4
+	wait           	1
+	playfram       	0x66	# frame set 6
+	move           	4
+	wait           	1
+	playfram       	0x77	# frame set 7
+	move           	4
+	wait           	1
+	playfram       	0x88	# frame set 8
+	move           	4
+	wait           	1
+	playfram       	0x99	# frame set 9
+	move           	4
+	wait           	1
+	playfram       	0x22	# frame set 2
+	goto           	FirebatWalking
+

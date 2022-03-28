@@ -1,0 +1,46 @@
+#####
+# generic Makefile for Mac
+# * Note: this is only a place holder. I have no idea
+#   how to properly compile on a regular Mac. Use the
+#   Mac OS X make file 'Makefile.macosx' instead if you can.
+
+include Makefile.ver
+
+# system options
+DS = \:
+
+# cc options
+INCLUDEDIR = :usr:include
+CC = cc
+CFLAGS = -I$(INCLUDEDIR) -Wall -ansi -pedantic -DMACOS
+LDFLAGS = -I$(INCLUDEDIR) -Wall 
+
+# java options
+JAVAC = javac
+JAR = jar
+JFLAGS = 
+
+# utilities
+REMOVE = rm
+REMOVE_FLAGS = -rf
+COPY = cp
+COPY_FLAGS = -r
+MKDIR = mkdir
+MKDIR_FLAGS =
+ARCHIVE = zip
+ARCHIVE_FLAGS = -rq
+
+# distribution
+DIST = icecc-$(VERSION)-mac.zip
+
+# executables
+EXEC1 = icedc
+EXEC2 = icecc
+JARFILE = IceCCUI.jar
+UIEXEC = IceCCUI
+
+# confuration files
+CONFIG = icecc.ini     # fix me
+UICONFIG = iceccui.ini # fix me
+
+include Makefile.inc

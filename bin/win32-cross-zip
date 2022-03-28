@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+
+$ZIP = $ARGV[0];
+shift @ARGV;
+@FILES = @ARGV;
+
+@textfiles = ();
+
+system("find @FILES > /tmp/allfiles.icecc");
+open(F,"/tmp/allfiles.icecc");
+while(<F>) {
+	chomp;
+	push (@textfiles, $_) if -T $_ && ! -d $_;
+}
+foreach $file (@textfiles) {
+	print "fixing file $file\n";
+	system("perl -i -pne 's/\\n/\\r\\n/g' '$file'") && die $!;
+}
+
+system("zip -rq $ZIP @FILES");

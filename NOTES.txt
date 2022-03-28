@@ -1,0 +1,199 @@
+IceCC
+=====
+
+Last updated: $Date: 2001/01/15 08:10:56 $
+
+* 2000/12/30 General Update
+  - Now that I've thoroughly hammered the general iscript, dat, tbl,
+    etc. API for all the bugs I'm probably going to find, it seems
+    like the proper time to reflect on the general interface before I
+    go ahead and finish up with the easy part (the actual
+    compiler/decompiler).
+
+    To be sure, I am not quite happy with the way the iscript.h file
+    turned out. I definitely should have did more planning on the
+    internal iscript structure representation before I started and
+    been more careful about using global variables when constructing
+    the structure. None of the mess will affect users of the API
+    (e.g., myself from here on out), but the internals code is a
+    little bit more messy than I'd really like. Part of me wants to do
+    a little cleaning up, which wouldn't be very difficult, but then
+    the other part of me knows that it will probably introduce more
+    bugs into it and generally use up more of my time. So for now, I'm
+    just going to leave it as it is.
+
+    As for the iscript interface, the data structure looks something
+    like this:
+
+    ----------------------
+    | struct imagescript |
+    ----------------------
+      |
+      V           ----...
+   -----------    |
+   | headers |    |    ---------------- start
+   |---------|<----    | symtbl label |<--->[instr][instr][instr][instr]
+   | id=1    |<------->| uniq_id=0    |              ^              ^
+   |---------|<-----   |              |              |          jump|
+   | id=2    |     |   ----------------              |              |
+   |---------|     |   ----------------              |              |
+   | id=3    |     --->| symtbl label | start        |              |
+   |---------|         | uniq_id=1    |<--------------              |
+   | ...     |         |              |                             |
+   |---------|         ----------------                             |
+   |         |                                                      |
+   |---------|                                                      |
+   |         |                                                      |
+   |---------|         ----------------                             |
+   |         |         | symtbl label |                             |
+   |---------|         | uniq_id=10   |<-----------------------------
+   |         |         |              |<-------
+   |---------|         ---------------- start |
+   |         |                                --->[instr][instr][instr]
+   |---------|
+   |         |
+   -----------
+   (HashTable)
+
+   This representation is a bit funny at first, but it is very easy to
+   manipulate. To understand it, you have to know a little about the
+   iscript structure. At the top level there is the header-table
+   (which is the header HashTable in this structure). This table
+   determines which set of animations go with each ISCRIPT ID, an
+   identifier that is used to assiciate images.dat entries with their
+   iscript animations. Hence, in our header hash, we have each entry
+   associated with an ID (its iscript ID). Each entry points to
+   several 'symtbl' entries (symbol table entries). We can think of
+   these as 'labels' which point to a certain place in the animation
+   code. And each symtbl entry points to a place somewhere in a stream
+   of 'instr's or instructures. These are actually doubly linked-list
+   like structures "somewhere out in the ether." :) Each instruction
+   is contains an opcode and its arguments, and a pointer to both its
+   next argument and its previous argument, so you can traverse all
+   the instructions in a stream (or what in my code is called a
+   'bytecode enumeration') very easily, and seek back and forth. Some
+   instructions 'jump' to other instructions -- that is, instead of
+   going strait to the instruction that is after it, it continues
+   execution somewhere else in the sea of instructions. These point
+   back to a symtbl entry, which in turn point to the next code
+   location where execution is to continue. Thus, by "following the
+   arrows" you can get to any instruction from any header very
+   easily. Of course this can be done simply in the iscript.bin as
+   well, since it just uses numeric pointers. However, this model is
+   more flexible because the numeric pointers in the iscript are
+   abstracted as the symtbl labels in our model. They no longer have a
+   'fixed' place in a file stream, and we can easily insert an
+   instruction in a bytecode stream or change which symtbl label a
+   jump instruction jumps to. That is the motivation anyway.
+
+   In addition, you will notice that all the pointers go both
+   ways. This is so no matter where we are in the imagescript
+   structure, we can go backward and find where we came from. This
+   allows us to do a 'backtrace' from any instruction and find the
+   routes from which can arrive at that instruction. This makes it
+   easier to show what might be affected if we were to change an
+   instruction stream or symtbl entry. This is an essential feature
+   that I planned to use in my decompiler, since a generic dump of all
+   the instructions is useless unless you know percisely which
+   intructions are associated with which graphics.
+
+   Anyway, that should be enough for now. I may further elaborate on
+   the API at a later time. The dat and tbl routines are pretty easy
+   to understand from the code alone.
+
+Intro
+=====
+
+IceCC is a little practice problem I made up for myself, a sort of
+'proof of concept' decompiler/compiler (since I'm going to have to
+write a real one sometime soon anyway for something like java). What
+it does, or will eventually do (hopefully) is decompile and compile
+the iscript.bin Starcraft Animation (Image) Script file into human
+readable text (like a sort of assembly language) and back into
+an iscript.bin file again that Starcraft can use. 
+
+There isn't anything done here that can't be done with other programs
+out there (like ICE, http://www.camsys.org), but the main purpose of
+this project is to abstract the code from the binary file. The most
+difficult thing (its not really all to difficult, but requires some
+thinking if it is to be done quickly and efficiently) is to get rid of
+the 'goto XXXX' instructions which mandate a fixed binary position and
+replace them with 'goto textLabel' and create a text file where a
+label is infront of that particular location. This allows for very
+easy insertion of new instructions and deletion of old ones without
+having to worry about size restrictions, etc. A eventual iscript
+'assembly' file might look like:
+
+# this is an entry header, each iscript entry has a header which
+# points to each of its animation entries. Here I have it so the first
+# value you see is the header 'type' which determines how many
+# animation entries it has and then the labels of each of its entries
+# following that. Above it is a couple comments that the decompiler
+# will generate automagically so that the code is a bit more
+# readable. This is a comment too. :) The '\' characters just mean the
+# next line is a continuation of the previous. This allows us to break
+# up long lines.
+
+# images.dat says this is used by: /units/terran/marine.grp
+# my guess is that this is for the: Terran Marine
+.header 12 marineInit marineDeath marineInitGndAtk marineInitAirAtk \
+           marineSpAbility1 marineRptGndAtk marineRptAirAtk \
+           marineSpAbility2 marineRtnToIdleGnd marineRtnToIdleAir \
+           marineSpAbility3 marineWlking marineRtnToIdleWlking \
+           marineGeneric
+
+marineInit:
+	imgunderlay	240 0 0	# terran\tmaShad.grp
+lcl01:
+	playfram	0	# frame-set 0
+	wait		2
+	playfram	17	# frame-set 1
+	wait		2
+	playfram	34	# frame-set 2
+	wait		2
+	playfram	51	# frame-set 3
+	wait		2
+	goto		lcl101
+
+marineRptGndAtk:
+	playfram	170	# frame-set 10
+	wait		3
+	playfram	187	# frame-set 11
+	wait		3
+	playfram	204	# frame-set 12	
+	wait		3
+	attack		1
+	playfram	204	# frame-set 12	
+	wait		3
+	playfram	187	# frame-set 11
+	wait		3
+	goto		marineGndAttack
+
+...
+
+This is of course a made up example, but you get the idea. :)
+Eventually I may come to a point where I want to test my
+user-interface abilities and write a GUI, but that all depends on
+whether I feel like it then or not.
+
+Currently, I just got the first alpha, alpha build to decompile the
+entire iscript into memory (meaning there were zero opcode reading
+errors, even though some are still unknown), so a fully functional
+decompiler should not be far away (this is only 3 days work so far).
+
+If you want to know more about the iscript.bin file, you should my old
+'Starcraft Editing Bible', which is incomplete (and has some opcodes
+wrong), but gives a good general overview of it, and a lot of other
+things in the Starcraft data files. You can download it (windows text
+files) here: http://magnus99.dhs.org/downloads/
+
+The other thing I'm working on this project for is to practice doing
+code documentation. If you know C, I would very much like some
+feedback to how readable my code and comments are. :) Everything is
+under the GPL, and is written in ANSI C, so it is freely usable to
+anyone (but please read and understand the license) and portable (I'm
+actually developing this on Linux right now :).
+
+More to come as I have time to write it down.
+
+- jp (DI) <jp@magnus99.dhs.org>

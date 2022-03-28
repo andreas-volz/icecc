@@ -1,0 +1,23 @@
+* 06/09/02 jp - wow, lotsa memory leaks... probably should have added in memory
+  usage profiling much earlier, but oh well. :)
+* 06/08/02 jp - (MacOSX) for some reason from the GUI if we check 
+  "Display all warnings" and compile a file with lots and lots of errors
+  (e.g., some file that isn't even iscript text), the icecc process
+  never returns (goes to sleep). The exact same command works perfectly
+  from the command line, so I have no idea what is wrong, unless it's one of
+  those impossible to find memory leaks that only causes problems once and
+  a while... but no biggie, just make sure not to check that and it works
+  fine all the time. FIXED
+* 11/17/01 jp - On MacOSX, after fixing a bug in icecc.c (changed the
+  table_instrname_to_num resource table to be initialized correctly with
+  bytes instead of uint16's), I get a malloc error when running the
+  program. Still seems to exit OK, but this is symtomatic of something
+  being accessed after being freed which is not good and likely to cause
+  a crash. It is probably related to this, but I don't have time to
+  investigate at the moment. If you're using a big endian machine and
+  icecc crashes, then this is a likely cause.
+* 5/27/01 jp - On systems where data accesses must be word aligned 
+  (such as SPARC), mread/mwrite will fail (you'll get a bus error).
+  There are no plans at the moment to fix this. I don't think Starcraft
+  will be ported to Solaris any time soon. ;)
+

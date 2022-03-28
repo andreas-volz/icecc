@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -z $1 ]; then
+	echo "usage: remove-cvs <dir>"
+	exit 1
+fi
+
+find "$1" -name "CVS" -exec rm -rf {} \; >/dev/null 2>&1
+exit 0

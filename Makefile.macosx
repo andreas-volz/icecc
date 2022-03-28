@@ -1,0 +1,61 @@
+#####
+# generic Makefile for Mac OS X
+
+include Makefile.ver
+
+# system options
+DS = /
+
+# cc options
+INCLUDEDIR = /usr/include
+CC = cc
+CFLAGS = -g -I$(INCLUDEDIR) -Wall -ansi -pedantic -DMACOSX
+LDFLAGS = -I$(INCLUDEDIR) -Wall 
+
+# java options
+JAVAC = javac
+JAR = jar
+JFLAGS = 
+
+# utilities
+REMOVE = rm
+REMOVE_FLAGS = -rf
+COPY = cp
+COPY_FLAGS = -R
+MKDIR = mkdir
+MKDIR_FLAGS =
+ARCHIVE = tar
+ARCHIVE_FLAGS = -czf # assumes gnu tar, which can gzip also
+
+# distribution
+README = Readme.rtf
+DISTDIR = "Ice CC"
+DIST = icecc-$(VERSION)-macosx.tar.gz
+
+# executables
+EXEC1 = icedc
+EXEC2 = icecc
+JARFILE = IceCCUI.jar
+UIEXEC = IceCC.app
+
+# confuration files
+CONFIG = icecc.ini
+UICONFIG = iceccui.ini
+
+include Makefile.inc
+
+# create the macosx iceccui application
+macosx-app: $(JARFILE) $(EXEC1) $(EXEC2)
+	$(COPY) $(JARFILE) IceCC.app/Contents/Resources/Java/IceCCUI.jar
+
+# create the Mac OS X specific package
+macosx-pkg: $(EXEC1) $(EXEC2) $(JARFILE) $(UIEXEC) $(DATA) $(HELP) macosx-app
+	$(REMOVE) $(REMOVE_FLAGS)  $(DISTDIR)
+	$(MKDIR) $(MKDIR_FLAGS)  $(DISTDIR)
+	$(COPY) $(COPY_FLAGS) $(DIST_FILE) $(EXEC1) $(EXEC2) \
+		$(UIEXEC) $(DATADIR) $(HELP)  $(DISTDIR)
+	$(COPY) $(COPY_FLAGS) $(CONFIG)  $(DISTDIR)$(DS)$(CONFIGFILE)
+	$(COPY) $(COPY_FLAGS) $(UICONFIG)  $(DISTDIR)$(DS)$(UICONFIGFILE)
+	bin/remove-cvs $(DISTDIR)
+	$(ARCHIVE) $(ARCHIVE_FLAGS) $(DIST)  $(DISTDIR)
+	$(REMOVE) $(REMOVE_FLAGS)  $(DISTDIR)

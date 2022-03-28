@@ -1,0 +1,11 @@
+#IceCCUI Configuration File
+#Mon Mar 26 19:55:31 PST 2001
+ConfigFile=icecc.ini
+IceccExec=icecc
+UseDefaultIscript=true
+TextEditor=notepad
+ConfigDir=data
+IcedcExec=icedc
+DisplayAllWarnings=false
+SeparateHeaders=true
+MergeDefaultIscript=true

@@ -1,0 +1,88 @@
+# ----------------------------------------------------------------------------- #
+# This is a decompile of the iscript.bin file './data/scripts/iscript.bin'
+# created on: Sat Jun  8 04:40:42 2002
+# ----------------------------------------------------------------------------- #
+
+# ----------------------------------------------------------------------------- #
+# This header is used by images.dat entries:
+# 247 SCV (terran\SCV.grp)
+.headerstart
+IsId           	84
+Type           	15
+Init           	SCVInit
+Death          	SCVDeath
+GndAttkInit    	SCVGndAttkInit
+AirAttkInit    	[NONE]
+SpAbility1     	[NONE]
+GndAttkRpt     	SCVGndAttkInit
+AirAttkRpt     	[NONE]
+SpAbility2     	[NONE]
+GndAttkToIdle  	SCVGndAttkToIdle
+AirAttkToIdle  	[NONE]
+SpAbility3     	[NONE]
+Walking        	SCVWalking
+Other          	SCVOther
+BurrowInit     	[NONE]
+ConstrctHarvst 	[NONE]
+IsWorking      	SCVIsWorking
+.headerend
+# ----------------------------------------------------------------------------- #
+
+SCVInit:
+	imgul09        	248 0 7	# SCVShad (terran\SCV.grp)
+	playfram       	0x00	# frame set 0
+	goto           	SCVOther
+
+SCVOther:
+	shvertpos      	0 # Look Ma! We are bouncing!
+	wait		1
+	shvertpos      	1
+	wait      	1
+	shvertpos      	2
+	wait      	1
+	shvertpos      	3
+	wait      	1
+	shvertpos      	2
+	wait      	1
+	shvertpos      	1
+	wait		1
+	goto           	SCVOther
+
+SCVDeath:
+	playsnd        	369	# Terran\SCV\TSCDth00.WAV
+	imgol08        	332 0 0	# TerranBuildingExplosionsmall (thingy\tBangS.grp)
+	wait           	3
+	end            	
+
+SCVGndAttkInit:
+	shvertpos      	0
+	wait           	1
+	playfram       	0x22	# frame set 2
+	attack25       	1
+	wait           	1
+	playfram       	0x11	# frame set 1
+	wait           	1
+	gotorepeatattk 	
+	goto           	SCVOther
+
+SCVGndAttkToIdle:
+	playfram       	0x00	# frame set 0
+	goto           	SCVOther
+
+SCVWalking:
+	playfram       	0x00	# frame set 0
+	imgol08        	249 0 0	# SCVGlow (thingy\tscGlow.grp)
+	shvertpos      	0
+	goto           	SCVOther
+
+SCVIsWorking:
+	shvertpos      	0
+	wait           	1
+local00:
+	playfram       	0x22	# frame set 2
+	useweapon      	14	# Fusion Cutter
+	wait           	1
+	playfram       	0x11	# frame set 1
+	waitrand       	8 10
+	goto           	local00
+
