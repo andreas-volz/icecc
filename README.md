@@ -1,11 +1,10 @@
--------------------------------------------------------------------------------
-IceCC version 1.3
-Copyright (c) 2000-2002 Jeff Pang <jp@magnus99.dhs.org>
-Webpage: http://magnus99.dhs.org
-Modifications copyright (c) 2006-2007 ShadowFlare
-Webpage: http://sfsrealm.hopto.org/
-See the file COPYING for legal stuff
--------------------------------------------------------------------------------
+* IceCC version 1.3
+* Copyright (c) 2000-2002 Jeff Pang <jp@magnus99.dhs.org>
+* Webpage: http://magnus99.dhs.org
+* Modifications copyright (c) 2006-2007 ShadowFlare
+* Webpage: http://sfsrealm.hopto.org/
+* See the file COPYING for legal stuff
+
 
 IceCC (Iscript Code Compiler) is a program used to edit the image script 
 file (iscript.bin) in Starcraft Broodwar.
