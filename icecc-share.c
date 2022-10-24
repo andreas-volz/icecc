@@ -70,8 +70,8 @@ char *table_animno_to_name[] = {
   "Unused2",
   "Walking",
   "WalkingToIdle",
-  "SpecialState1", // Some sort of category of special animations, in some cases an in-transit animation, sometimes used for special orders, sometimes having to do with the animation when something finishes morphing, or the first stage of a construction animation
-  "SpecialState2", // Some sort of category of special animations, in some cases a burrowed animation, sometimes used for special orders, sometimes having to do with the animation when canceling a morph, or the second stage of a construction animation
+  "SpecialState1", /* Some sort of category of special animations, in some cases an in-transit animation, sometimes used for special orders, sometimes having to do with the animation when something finishes morphing, or the first stage of a construction animation */
+  "SpecialState2", /* Some sort of category of special animations, in some cases a burrowed animation, sometimes used for special orders, sometimes having to do with the animation when canceling a morph, or the second stage of a construction animation */
   "AlmostBuilt",
   "Built",
   "Landing",
